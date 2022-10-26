@@ -4,5 +4,11 @@
 /// Апи
 enum Url {
     static let urlPopular: String =
-        "https://api.themoviedb.org/3/movie/popular?api_key=799ad00db48f25949a3aaea920d756d6"
+        "https://api.themoviedb.org/3/movie/popular?api_key=799ad00db48f25949a3aaea920d756d6&language=ru-RU"
+    static let urlPoster: String = "https://image.tmdb.org/t/p/w500"
+    static let urlTopRated: String =
+        "https://api.themoviedb.org/3/movie/top_rated?api_key=799ad00db48f25949a3aaea920d756d6&language=ru-RU"
+    static let urlUpcoming: String =
+        "https://api.themoviedb.org/3/movie/upcoming?api_key=799ad00db48f25949a3aaea920d756d6&language=ru-RU"
+    
 }

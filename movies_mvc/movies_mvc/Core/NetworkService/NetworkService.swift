@@ -5,11 +5,18 @@ import Foundation
 
 /// Сетевой слой
 final class NetworkService: NetworkServiceProtocol {
-    
     // MARK: - Public methods
 
     func fetchPopularResult(complition: @escaping (Result<Results, Error>) -> Void) {
         downloadJson(url: Url.urlPopular, complition: complition)
+    }
+
+    func fetchTopRatedResult(complition: @escaping (Result<Results, Error>) -> Void) {
+        downloadJson(url: Url.urlTopRated, complition: complition)
+    }
+
+    func fetchUpcomingResult(complition: @escaping (Result<Results, Error>) -> Void) {
+        downloadJson(url: Url.urlUpcoming, complition: complition)
     }
 
     // MARK: - Private methods

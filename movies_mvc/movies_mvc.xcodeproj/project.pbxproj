@@ -17,6 +17,13 @@
 		851E720E2906F1F9008A3DE7 /* NetworkServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E720D2906F1F9008A3DE7 /* NetworkServiceProtocol.swift */; };
 		851E72112906F261008A3DE7 /* Results.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E72102906F261008A3DE7 /* Results.swift */; };
 		851E72132906F3D6008A3DE7 /* Movies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E72122906F3D6008A3DE7 /* Movies.swift */; };
+		851E7216290725CE008A3DE7 /* MovieCatalogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E7215290725CE008A3DE7 /* MovieCatalogTableViewCell.swift */; };
+		851E721B2907D3BD008A3DE7 /* Urbanist-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 851E721A2907D3BD008A3DE7 /* Urbanist-ExtraBold.ttf */; };
+		851E721E2907D829008A3DE7 /* UIImageView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E721D2907D829008A3DE7 /* UIImageView+Extension.swift */; };
+		851E722029084F02008A3DE7 /* Urbanist-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 851E721F29084F02008A3DE7 /* Urbanist-Bold.ttf */; };
+		851E7222290854C8008A3DE7 /* Urbanist-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 851E7221290854C8008A3DE7 /* Urbanist-Medium.ttf */; };
+		851E722D29085794008A3DE7 /* DateFormatter+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E722C29085794008A3DE7 /* DateFormatter+Extension.swift */; };
+		851E722F29087C53008A3DE7 /* SegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 851E722E29087C53008A3DE7 /* SegmentControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +39,13 @@
 		851E720D2906F1F9008A3DE7 /* NetworkServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceProtocol.swift; sourceTree = "<group>"; };
 		851E72102906F261008A3DE7 /* Results.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Results.swift; sourceTree = "<group>"; };
 		851E72122906F3D6008A3DE7 /* Movies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movies.swift; sourceTree = "<group>"; };
+		851E7215290725CE008A3DE7 /* MovieCatalogTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCatalogTableViewCell.swift; sourceTree = "<group>"; };
+		851E721A2907D3BD008A3DE7 /* Urbanist-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Urbanist-ExtraBold.ttf"; sourceTree = "<group>"; };
+		851E721D2907D829008A3DE7 /* UIImageView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extension.swift"; sourceTree = "<group>"; };
+		851E721F29084F02008A3DE7 /* Urbanist-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Urbanist-Bold.ttf"; sourceTree = "<group>"; };
+		851E7221290854C8008A3DE7 /* Urbanist-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Urbanist-Medium.ttf"; sourceTree = "<group>"; };
+		851E722C29085794008A3DE7 /* DateFormatter+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Extension.swift"; sourceTree = "<group>"; };
+		851E722E29087C53008A3DE7 /* SegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,9 +82,12 @@
 				851E71ED29069D00008A3DE7 /* SceneDelegate.swift */,
 				851E72012906E263008A3DE7 /* MovieCatalogViewController */,
 				851E72062906EEC4008A3DE7 /* Core */,
+				851E72182907D3A9008A3DE7 /* Helper */,
+				851E721C2907D80B008A3DE7 /* Extensions */,
 				851E71F429069D04008A3DE7 /* Assets.xcassets */,
 				851E71F929069D04008A3DE7 /* Info.plist */,
 				851E72052906E3C2008A3DE7 /* Storyboard */,
+				851E722E29087C53008A3DE7 /* SegmentControl.swift */,
 			);
 			path = movies_mvc;
 			sourceTree = "<group>";
@@ -87,6 +104,7 @@
 		851E72022906E26F008A3DE7 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				851E7214290725A0008A3DE7 /* Cell */,
 				851E72032906E286008A3DE7 /* MovieCatalogViewController.swift */,
 			);
 			path = ViewController;
@@ -133,6 +151,41 @@
 				851E72122906F3D6008A3DE7 /* Movies.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		851E7214290725A0008A3DE7 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				851E7215290725CE008A3DE7 /* MovieCatalogTableViewCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		851E72182907D3A9008A3DE7 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				851E72192907D3B1008A3DE7 /* Fonts */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		851E72192907D3B1008A3DE7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				851E7221290854C8008A3DE7 /* Urbanist-Medium.ttf */,
+				851E721F29084F02008A3DE7 /* Urbanist-Bold.ttf */,
+				851E721A2907D3BD008A3DE7 /* Urbanist-ExtraBold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		851E721C2907D80B008A3DE7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				851E721D2907D829008A3DE7 /* UIImageView+Extension.swift */,
+				851E722C29085794008A3DE7 /* DateFormatter+Extension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -197,6 +250,9 @@
 			files = (
 				851E71F829069D04008A3DE7 /* LaunchScreen.storyboard in Resources */,
 				851E71F529069D04008A3DE7 /* Assets.xcassets in Resources */,
+				851E721B2907D3BD008A3DE7 /* Urbanist-ExtraBold.ttf in Resources */,
+				851E7222290854C8008A3DE7 /* Urbanist-Medium.ttf in Resources */,
+				851E722029084F02008A3DE7 /* Urbanist-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,14 +302,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				851E721E2907D829008A3DE7 /* UIImageView+Extension.swift in Sources */,
 				851E71EC29069D00008A3DE7 /* AppDelegate.swift in Sources */,
 				851E72042906E286008A3DE7 /* MovieCatalogViewController.swift in Sources */,
+				851E7216290725CE008A3DE7 /* MovieCatalogTableViewCell.swift in Sources */,
 				851E72132906F3D6008A3DE7 /* Movies.swift in Sources */,
 				851E720E2906F1F9008A3DE7 /* NetworkServiceProtocol.swift in Sources */,
 				851E72092906EFD3008A3DE7 /* NetworkService.swift in Sources */,
 				851E72112906F261008A3DE7 /* Results.swift in Sources */,
 				851E71EE29069D00008A3DE7 /* SceneDelegate.swift in Sources */,
+				851E722D29085794008A3DE7 /* DateFormatter+Extension.swift in Sources */,
 				851E720C2906EFF8008A3DE7 /* Url.swift in Sources */,
+				851E722F29087C53008A3DE7 /* SegmentControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
