@@ -63,7 +63,7 @@ final class MovieCatalogTableViewCell: UITableViewCell {
     private func setVoteAverageLabel(movie: Movie) {
         let vote = String(format: "%.1f", movie.voteAverage)
         voteAverageLabel.text = vote
-        voteAverageLabel.textColor = movie.voteAverage <= 7.0 ? .systemRed : .label
+        voteAverageLabel.textColor = movie.voteAverage < 7.0 ? .systemRed : .label
     }
 
     private func setReleaseDateLabel(movie: Movie) {

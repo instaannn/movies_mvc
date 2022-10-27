@@ -19,6 +19,18 @@ final class NetworkService: NetworkServiceProtocol {
         downloadJson(url: Url.urlUpcoming, complition: complition)
     }
 
+    func fetchDetails(for id: Int, complition: @escaping (Result<MovieDetail, Error>) -> Void) {
+        downloadJson(url: "\(Url.urlDetail)\(id)?api_key=\(Url.token)&language=ru-RU", complition: complition)
+    }
+
+    func fetchTrailer(for id: Int, complition: @escaping (Result<Trailers, Error>) -> Void) {
+        downloadJson(url: "\(Url.urlDetail)\(id)/videos?api_key=\(Url.token)", complition: complition)
+    }
+
+    func fetchCast(for id: Int, complition: @escaping (Result<Cast, Error>) -> Void) {
+        downloadJson(url: "\(Url.urlDetail)\(id)/credits?api_key=\(Url.token)", complition: complition)
+    }
+
     // MARK: - Private methods
 
     private func downloadJson<T: Decodable>(url: String, complition: @escaping (Result<T, Error>) -> Void) {

@@ -33,6 +33,16 @@ final class MovieCatalogViewController: UIViewController {
         setupCategorySegmentControl()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+
     // MARK: - Private methods
 
     private func loadData() {
@@ -54,8 +64,8 @@ final class MovieCatalogViewController: UIViewController {
     }
 
     private func setupNavigationController() {
-        navigationController?.setNavigationBarHidden(true, animated: true)
         view.backgroundColor = .systemBackground
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
 
     private func setupCategorySegmentControl() {
@@ -63,6 +73,12 @@ final class MovieCatalogViewController: UIViewController {
         categorySegmentControl.addTarget(self, action: #selector(segmentControlAction(_:)), for: .valueChanged)
         categorySegmentControl.selectedSegmentIndex = 0
         categorySegmentControl.underlinePosition()
+    }
+
+    private func goToDetailMoviewViewController(id: Int) {
+        let movieDetailViewController = MovieDetailViewController()
+        movieDetailViewController.movieId = id
+        navigationController?.pushViewController(movieDetailViewController, animated: true)
     }
 
     @objc private func segmentControlAction(_ sender: UISegmentedControl) {
@@ -122,6 +138,13 @@ final class MovieCatalogViewController: UIViewController {
         default:
             break
         }
+    }
+}
+
+extension MovieCatalogViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let id = results?.results[indexPath.row].id else { return }
+        goToDetailMoviewViewController(id: id)
     }
 }
 
@@ -194,6 +217,7 @@ private extension MovieCatalogViewController {
         tableView.separatorStyle = .none
         tableView.register(MovieCatalogTableViewCell.self, forCellReuseIdentifier: Constants.cellIdentifier)
         tableView.dataSource = self
+        tableView.delegate = self
         return tableView
     }
 }
