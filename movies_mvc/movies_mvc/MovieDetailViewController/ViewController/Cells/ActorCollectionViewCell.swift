@@ -36,7 +36,7 @@ final class ActorCollectionViewCell: UICollectionViewCell {
         guard let posterPath = model.profilePath else { return }
         let moviePosterString = Url.urlPoster + posterPath
         guard let url = URL(string: moviePosterString) else { return }
-        actorPhotoImageView.load(url: url)
+        actorPhotoImageView.loadImageWithUrl(url)
     }
 }
 
@@ -80,8 +80,8 @@ private extension ActorCollectionViewCell {
 // MARK: - Factory
 
 private extension ActorCollectionViewCell {
-    func makeActorPhotoImageView() -> UIImageView {
-        let imageView = UIImageView()
+    func makeActorPhotoImageView() -> ImageLoader {
+        let imageView = ImageLoader()
         imageView.layer.cornerRadius = 25
         imageView.backgroundColor = .systemBackground
         imageView.clipsToBounds = true

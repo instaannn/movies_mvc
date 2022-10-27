@@ -154,14 +154,14 @@ final class MovieDetailViewController: UIViewController {
         guard let backdropPath = movieDetail?.backdropPath else { return }
         let moviePosterString = Url.urlPoster + backdropPath
         guard let url = URL(string: moviePosterString) else { return }
-        backgroundImageView.load(url: url)
+        backgroundImageView.loadImageWithUrl(url)
     }
 
     private func setPosterImageView(movieDetail: MovieDetail?) {
         guard let posterPath = movieDetail?.posterPath else { return }
         let moviePosterString = Url.urlPoster + posterPath
         guard let url = URL(string: moviePosterString) else { return }
-        posterImageView.load(url: url)
+        posterImageView.loadImageWithUrl(url)
     }
 
     private func setTimeLabel(movieDetail: MovieDetail?) {
@@ -344,21 +344,21 @@ private extension MovieDetailViewController {
 // MARK: - Factory
 
 private extension MovieDetailViewController {
-    func makeBackgroundImageView() -> UIImageView {
-        let imageView = UIImageView()
+    func makeBackgroundImageView() -> ImageLoader {
+        let imageView = ImageLoader()
         imageView.backgroundColor = .systemBackground
         imageView.contentMode = .scaleAspectFill
         return imageView
     }
 
-    func makeGradientImageView() -> UIImageView {
-        let imageView = UIImageView()
+    func makeGradientImageView() -> ImageLoader {
+        let imageView = ImageLoader()
         imageView.image = UIImage(named: Constants.gradientImageViewName)
         return imageView
     }
 
-    func makePosterImageView() -> UIImageView {
-        let imageView = UIImageView()
+    func makePosterImageView() -> ImageLoader {
+        let imageView = ImageLoader()
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         imageView.backgroundColor = .systemBackground

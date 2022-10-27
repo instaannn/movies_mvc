@@ -38,10 +38,6 @@ final class MovieCatalogTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 
-    override func prepareForReuse() {
-        posterImageView.image = UIImage(named: Constants.placeholderImageName)
-    }
-
     // MARK: - Public methods
 
     func configure(movie: Movie) {
@@ -57,7 +53,7 @@ final class MovieCatalogTableViewCell: UITableViewCell {
         guard let posterPath = movie.posterPath else { return }
         let moviePosterString = Url.urlPoster + posterPath
         guard let url = URL(string: moviePosterString) else { return }
-        posterImageView.load(url: url)
+        posterImageView.loadImageWithUrl(url)
     }
 
     private func setVoteAverageLabel(movie: Movie) {
@@ -125,8 +121,8 @@ private extension MovieCatalogTableViewCell {
 // MARK: - Factory
 
 private extension MovieCatalogTableViewCell {
-    func makePosterImageView() -> UIImageView {
-        let imageView = UIImageView()
+    func makePosterImageView() -> ImageLoader {
+        let imageView = ImageLoader()
         imageView.layer.cornerRadius = 5
         imageView.clipsToBounds = true
         imageView.image = UIImage(named: Constants.placeholderImageName)

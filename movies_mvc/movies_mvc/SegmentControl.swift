@@ -3,7 +3,7 @@
 
 import UIKit
 
-///
+/// Кастомный SegmentControl с анимацией
 class SegmentControl: UISegmentedControl {}
 
 extension UIImage {

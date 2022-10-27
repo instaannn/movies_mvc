@@ -17,11 +17,14 @@ final class MovieCatalogViewController: UIViewController {
     private lazy var tableView = makeTableView()
     private lazy var containerView = UIView()
     private lazy var categorySegmentControl = SegmentControl(items: Constants.segmentControlItems)
+    private lazy var currentPage = 1
+    private lazy var hasNextPage = true
+    private lazy var currentRequestType: RequestType = .popular
 
     // MARK: - Private properties
 
-    private var results: Results?
     private var networkService: NetworkServiceProtocol?
+    private var movies: [Movie] = []
 
     // MARK: - Lifecycle
 
@@ -45,20 +48,27 @@ final class MovieCatalogViewController: UIViewController {
 
     // MARK: - Private methods
 
-    private func loadData() {
+    func update() {
+        if hasNextPage {
+            currentPage += 1
+            loadData(requestType: currentRequestType)
+            hasNextPage = false
+        }
+    }
+
+    private func loadData(requestType: RequestType) {
         networkService = NetworkService()
-        networkService?.fetchPopularResult(complition: { [weak self] item in
+        networkService?.fetchResult(page: currentPage, requestType: requestType, complition: { [weak self] item in
             guard let self = self else { return }
-            print(Thread.current)
             DispatchQueue.main.async {
                 switch item {
                 case let .failure(error):
                     print(error)
                 case let .success(data):
-                    self.results = data
+                    self.movies += data.results
+                    self.hasNextPage = true
                     self.tableView.reloadData()
                 }
-                print(Thread.current)
             }
         })
     }
@@ -85,56 +95,23 @@ final class MovieCatalogViewController: UIViewController {
         let selectIndex = sender.selectedSegmentIndex
         switch selectIndex {
         case 0:
+            movies.removeAll()
+            currentPage = 1
             categorySegmentControl.underlinePosition()
-            networkService = NetworkService()
-            networkService?.fetchPopularResult(complition: { [weak self] item in
-                guard let self = self else { return }
-                print(Thread.current)
-                DispatchQueue.main.async {
-                    switch item {
-                    case let .failure(error):
-                        print(error)
-                    case let .success(data):
-                        self.results = data
-                        self.tableView.reloadData()
-                    }
-                    print(Thread.current)
-                }
-            })
+            currentRequestType = .popular
+            loadData(requestType: currentRequestType)
         case 1:
+            movies.removeAll()
+            currentPage = 1
             categorySegmentControl.underlinePosition()
-            networkService = NetworkService()
-            networkService?.fetchTopRatedResult(complition: { [weak self] item in
-                guard let self = self else { return }
-                print(Thread.current)
-                DispatchQueue.main.async {
-                    switch item {
-                    case let .failure(error):
-                        print(error)
-                    case let .success(data):
-                        self.results = data
-                        self.tableView.reloadData()
-                    }
-                    print(Thread.current)
-                }
-            })
+            currentRequestType = .topRated
+            loadData(requestType: currentRequestType)
         case 2:
+            movies.removeAll()
+            currentPage = 1
             categorySegmentControl.underlinePosition()
-            networkService = NetworkService()
-            networkService?.fetchUpcomingResult(complition: { [weak self] item in
-                guard let self = self else { return }
-                print(Thread.current)
-                DispatchQueue.main.async {
-                    switch item {
-                    case let .failure(error):
-                        print(error)
-                    case let .success(data):
-                        self.results = data
-                        self.tableView.reloadData()
-                    }
-                    print(Thread.current)
-                }
-            })
+            currentRequestType = .upcoming
+            loadData(requestType: currentRequestType)
         default:
             break
         }
@@ -143,8 +120,7 @@ final class MovieCatalogViewController: UIViewController {
 
 extension MovieCatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let id = results?.results[indexPath.row].id else { return }
-        goToDetailMoviewViewController(id: id)
+        goToDetailMoviewViewController(id: movies[indexPath.row].id)
     }
 }
 
@@ -152,15 +128,17 @@ extension MovieCatalogViewController: UITableViewDelegate {
 
 extension MovieCatalogViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        results?.results.count ?? 0
+        movies.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: Constants.cellIdentifier
         ) as? MovieCatalogTableViewCell else { return UITableViewCell() }
-        guard let movie = results?.results[indexPath.row] else { return UITableViewCell() }
-        cell.configure(movie: movie)
+        if indexPath.row == movies.count - 1 {
+            update()
+        }
+        cell.configure(movie: movies[indexPath.row])
         return cell
     }
 }
@@ -177,7 +155,7 @@ private extension MovieCatalogViewController {
     }
 
     func setupBinding() {
-        loadData()
+        loadData(requestType: currentRequestType)
     }
 
     func setUpConstraints() {
