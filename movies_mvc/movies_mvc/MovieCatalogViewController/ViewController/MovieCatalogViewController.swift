@@ -91,25 +91,25 @@ final class MovieCatalogViewController: UIViewController {
         navigationController?.pushViewController(movieDetailViewController, animated: true)
     }
 
+    private func updateForSegment() {
+        movies.removeAll()
+        currentPage = 1
+        categorySegmentControl.underlinePosition()
+    }
+
     @objc private func segmentControlAction(_ sender: UISegmentedControl) {
         let selectIndex = sender.selectedSegmentIndex
         switch selectIndex {
         case 0:
-            movies.removeAll()
-            currentPage = 1
-            categorySegmentControl.underlinePosition()
+            updateForSegment()
             currentRequestType = .popular
             loadData(requestType: currentRequestType)
         case 1:
-            movies.removeAll()
-            currentPage = 1
-            categorySegmentControl.underlinePosition()
+            updateForSegment()
             currentRequestType = .topRated
             loadData(requestType: currentRequestType)
         case 2:
-            movies.removeAll()
-            currentPage = 1
-            categorySegmentControl.underlinePosition()
+            updateForSegment()
             currentRequestType = .upcoming
             loadData(requestType: currentRequestType)
         default:
@@ -117,6 +117,8 @@ final class MovieCatalogViewController: UIViewController {
         }
     }
 }
+
+// MARK: - UITableViewDelegate
 
 extension MovieCatalogViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

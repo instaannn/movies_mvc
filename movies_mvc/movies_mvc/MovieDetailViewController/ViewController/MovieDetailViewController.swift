@@ -21,6 +21,8 @@ final class MovieDetailViewController: UIViewController {
         static let watchTrailerButtonTitle = "Смотреть трейлер"
         static let goToImdbButtonImageName = "chevron.right"
         static let gradientImageViewName = "gradient"
+        static let stringFormat = "%.1f"
+        static let genresLabelText = "Жанры:"
     }
 
     // MARK: - Visual Components
@@ -29,14 +31,14 @@ final class MovieDetailViewController: UIViewController {
     private lazy var gradientImageView = makeGradientImageView()
     private lazy var posterImageView = makePosterImageView()
     private lazy var titleLabel = makeTitleLabel()
-    private lazy var runtimeLabel = makeBoldLabel()
+    private lazy var runtimeLabel = makeBoldLabel(size: 18)
     private lazy var voteAverageStackView = makeStackView()
     private lazy var starImageView = makeStarImageView()
-    private lazy var voteAverageLabel = makeBoldLabel()
+    private lazy var voteAverageLabel = makeBoldLabel(size: 18)
     private lazy var goToImdbButton = makeGoToImdbButton()
-    private lazy var releaseDateLabel = makeBoldLabel()
+    private lazy var releaseDateLabel = makeBoldLabel(size: 18)
     private lazy var watchTrailerButton = makeWatchTrailerButton()
-    private lazy var genresLabel = makeGenresLabel()
+    private lazy var genresLabel = makeBoldLabel(size: 16)
     private lazy var overviewLabel = makeOverviewLabel()
     private lazy var collectionView = makeCollectionView()
     private lazy var collectionViewFlowLayout = makeCollectionViewFlowLayout()
@@ -51,6 +53,7 @@ final class MovieDetailViewController: UIViewController {
     private var trailers: Trailers?
     private var networkService: NetworkServiceProtocol?
     private var cast: Cast?
+    private var shareUrlImdb = ""
 
     // MARK: - Lifecycle
 
@@ -73,7 +76,6 @@ final class MovieDetailViewController: UIViewController {
         networkService = NetworkService()
         networkService?.fetchDetails(for: movieId, complition: { [weak self] item in
             guard let self = self else { return }
-            print(Thread.current)
             DispatchQueue.main.async {
                 switch item {
                 case let .failure(error):
@@ -82,7 +84,6 @@ final class MovieDetailViewController: UIViewController {
                     self.movieDetail = data
                     self.setUI(movieDetail: self.movieDetail)
                 }
-                print(Thread.current)
             }
         })
     }
@@ -91,7 +92,6 @@ final class MovieDetailViewController: UIViewController {
         networkService = NetworkService()
         networkService?.fetchTrailer(for: movieId, complition: { [weak self] item in
             guard let self = self else { return }
-            print(Thread.current)
             DispatchQueue.main.async {
                 switch item {
                 case let .failure(error):
@@ -99,7 +99,6 @@ final class MovieDetailViewController: UIViewController {
                 case let .success(data):
                     self.trailers = data
                 }
-                print(Thread.current)
             }
         })
     }
@@ -108,7 +107,6 @@ final class MovieDetailViewController: UIViewController {
         networkService = NetworkService()
         networkService?.fetchCast(for: movieId, complition: { [weak self] item in
             guard let self = self else { return }
-            print(Thread.current)
             DispatchQueue.main.async {
                 switch item {
                 case let .failure(error):
@@ -117,7 +115,6 @@ final class MovieDetailViewController: UIViewController {
                     self.cast = data
                     self.collectionView.reloadData()
                 }
-                print(Thread.current)
             }
         })
     }
@@ -134,58 +131,51 @@ final class MovieDetailViewController: UIViewController {
     }
 
     private func setUI(movieDetail: MovieDetail?) {
+        guard let movieDetail = movieDetail else { return }
         setPostersImageView(movieDetail: movieDetail)
         setPosterImageView(movieDetail: movieDetail)
-        titleLabel.text = movieDetail?.title
+        titleLabel.text = movieDetail.title
         setTimeLabel(movieDetail: movieDetail)
         setVoteAverageLabel(movieDetail: movieDetail)
-
-        var text: [String] = []
-        guard let fff = movieDetail?.genres else { return }
-        for index in fff {
-            text.append(index.name)
-        }
-        genresLabel.text = "Жанры: \(text.joined(separator: ", "))"
-
-        overviewLabel.text = movieDetail?.overview
+        shareUrlImdb = "\(Url.imdbUrl)\(movieDetail.imdbId ?? "")"
+        overviewLabel.text = movieDetail.overview
     }
 
-    private func setPostersImageView(movieDetail: MovieDetail?) {
-        guard let backdropPath = movieDetail?.backdropPath else { return }
-        let moviePosterString = Url.urlPoster + backdropPath
+    private func setPostersImageView(movieDetail: MovieDetail) {
+        let moviePosterString = Url.urlPoster + movieDetail.backdropPath
         guard let url = URL(string: moviePosterString) else { return }
         backgroundImageView.loadImageWithUrl(url)
     }
 
-    private func setPosterImageView(movieDetail: MovieDetail?) {
-        guard let posterPath = movieDetail?.posterPath else { return }
+    private func setPosterImageView(movieDetail: MovieDetail) {
+        guard let posterPath = movieDetail.posterPath else { return }
         let moviePosterString = Url.urlPoster + posterPath
         guard let url = URL(string: moviePosterString) else { return }
         posterImageView.loadImageWithUrl(url)
     }
 
-    private func setTimeLabel(movieDetail: MovieDetail?) {
-        guard let time = movieDetail?.runtime else { return }
-        let hour = time / 60
-        let minute = time - (hour * 60)
-        runtimeLabel.text = "\(hour)ч \(minute)мин"
+    private func setTimeLabel(movieDetail: MovieDetail) {
+        guard let time = movieDetail.runtime else { return }
+        runtimeLabel.text = "\(time / 60)ч \(time % 60)мин"
     }
 
-    private func setVoteAverageLabel(movieDetail: MovieDetail?) {
-        guard let movieDetail = movieDetail else { return }
-        let vote = String(format: "%.1f", movieDetail.voteAverage)
+    private func setVoteAverageLabel(movieDetail: MovieDetail) {
+        let vote = String(format: Constants.stringFormat, movieDetail.voteAverage)
         voteAverageLabel.text = vote
         voteAverageLabel.textColor = movieDetail.voteAverage < 7.0 ? .systemRed : .label
     }
 
-    private func setReleaseDateLabel(movie: Movie) {
-        guard let date = DateFormatter.apiDateFormatter.date(from: movie.releaseDate) else { return }
-        releaseDateLabel.text = DateFormatter.dateLongFormatter.string(from: date)
+    private func setGenresLabel(movieDetail: MovieDetail) {
+        var genres: [String] = []
+        for index in movieDetail.genres {
+            genres.append(index.name)
+        }
+        genresLabel.text = "\(Constants.genresLabelText) \(genres.joined(separator: ", "))"
     }
 
     @objc private func goToImdbButtonAction() {
         guard let movieDetail = movieDetail?.imdbId,
-              let url = URL(string: "https://www.imdb.com/title/\(movieDetail)") else { return }
+              let url = URL(string: "\(Url.imdbUrl)\(movieDetail)") else { return }
         let vc = SFSafariViewController(url: url)
         present(vc, animated: true, completion: .none)
     }
@@ -197,13 +187,13 @@ final class MovieDetailViewController: UIViewController {
             showAlert(title: Constants.alertTitle, message: Constants.alertMessage)
             return
         }
-        let vc = SFSafariViewController(url: url)
-        present(vc, animated: true, completion: .none)
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true, completion: .none)
     }
 
     @objc private func shareButtonAction() {
         let activityViewController = UIActivityViewController(
-            activityItems: [movieDetail?.title],
+            activityItems: [movieDetail?.title ?? "", shareUrlImdb],
             applicationActivities: nil
         )
         present(activityViewController, animated: true)
@@ -229,10 +219,6 @@ extension MovieDetailViewController: UICollectionViewDataSource {
         return cell
     }
 }
-
-// MARK: - UICollectionViewDelegate
-
-extension MovieDetailViewController: UICollectionViewDelegate {}
 
 // MARK: - SetupUI
 
@@ -373,15 +359,9 @@ private extension MovieDetailViewController {
         return label
     }
 
-    func makeBoldLabel() -> UILabel {
+    func makeBoldLabel(size: CGFloat) -> UILabel {
         let label = UILabel()
-        label.font = UIFont(name: Constants.fontBold, size: 18)
-        return label
-    }
-
-    func makeGenresLabel() -> UILabel {
-        let label = UILabel()
-        label.font = UIFont(name: Constants.fontBold, size: 16)
+        label.font = UIFont(name: Constants.fontBold, size: size)
         return label
     }
 
@@ -432,7 +412,6 @@ private extension MovieDetailViewController {
         collectionView.register(ActorCollectionViewCell.self, forCellWithReuseIdentifier: Constants.cellId)
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
-        collectionView.delegate = self
         collectionView.scrollsToTop = false
         collectionView.showsHorizontalScrollIndicator = false
         return collectionView

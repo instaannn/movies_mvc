@@ -5,6 +5,14 @@ import Foundation
 
 /// Сетевой слой
 final class NetworkService: NetworkServiceProtocol {
+    // MARK: - Constants
+
+    private enum Constants {
+        static let detailsUrlString = "?api_key=\(Url.token)&language=ru-RU"
+        static let trailerUrlString = "/videos?api_key=\(Url.token)"
+        static let castUrlString = "/credits?api_key=\(Url.token)"
+    }
+
     // MARK: - Public methods
 
     func fetchResult(page: Int, requestType: RequestType, complition: @escaping (Result<Results, Error>) -> Void) {
@@ -12,15 +20,15 @@ final class NetworkService: NetworkServiceProtocol {
     }
 
     func fetchDetails(for id: Int, complition: @escaping (Result<MovieDetail, Error>) -> Void) {
-        downloadJson(url: "\(Url.urlDetail)\(id)?api_key=\(Url.token)&language=ru-RU", complition: complition)
+        downloadJson(url: "\(Url.urlDetail)\(id)\(Constants.detailsUrlString)", complition: complition)
     }
 
     func fetchTrailer(for id: Int, complition: @escaping (Result<Trailers, Error>) -> Void) {
-        downloadJson(url: "\(Url.urlDetail)\(id)/videos?api_key=\(Url.token)", complition: complition)
+        downloadJson(url: "\(Url.urlDetail)\(id)\(Constants.trailerUrlString)", complition: complition)
     }
 
     func fetchCast(for id: Int, complition: @escaping (Result<Cast, Error>) -> Void) {
-        downloadJson(url: "\(Url.urlDetail)\(id)/credits?api_key=\(Url.token)", complition: complition)
+        downloadJson(url: "\(Url.urlDetail)\(id)\(Constants.castUrlString)", complition: complition)
     }
 
     // MARK: - Private methods

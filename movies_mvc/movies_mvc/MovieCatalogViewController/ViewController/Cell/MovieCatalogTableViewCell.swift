@@ -14,6 +14,7 @@ final class MovieCatalogTableViewCell: UITableViewCell {
         static let fontMedium = "Urbanist-Medium"
         static let releaseDateLabelName = "Дата релиза:"
         static let starImageViewName = "star"
+        static let stringFormat = "%.1f"
     }
 
     // MARK: - Private visual Components
@@ -57,7 +58,7 @@ final class MovieCatalogTableViewCell: UITableViewCell {
     }
 
     private func setVoteAverageLabel(movie: Movie) {
-        let vote = String(format: "%.1f", movie.voteAverage)
+        let vote = String(format: Constants.stringFormat, movie.voteAverage)
         voteAverageLabel.text = vote
         voteAverageLabel.textColor = movie.voteAverage < 7.0 ? .systemRed : .label
     }
