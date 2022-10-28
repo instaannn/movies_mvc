@@ -17,14 +17,14 @@ final class MovieCatalogViewController: UIViewController {
     private lazy var tableView = makeTableView()
     private lazy var containerView = UIView()
     private lazy var categorySegmentControl = SegmentControl(items: Constants.segmentControlItems)
-    private lazy var currentPage = 1
-    private lazy var hasNextPage = true
-    private lazy var currentRequestType: RequestType = .popular
 
     // MARK: - Private properties
 
     private var networkService: NetworkServiceProtocol?
     private var movies: [Movie] = []
+    private var currentPage = 1
+    private var hasNextPage = true
+    private var currentRequestType: RequestType = .popular
 
     // MARK: - Lifecycle
 
