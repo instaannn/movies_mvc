@@ -3,14 +3,18 @@
 
 import UIKit.UIImageView
 
-///
-let imageCache = NSCache<AnyObject, AnyObject>()
-
 /// Кастомный UIImageView с кешированием картинок
 class ImageLoader: UIImageView {
-    var imageURL: URL?
+    // MARK: - Visual Components
 
     let activityIndicator = UIActivityIndicatorView()
+
+    // MARK: - Public Properties
+
+    private var imageURL: URL?
+    private let cache = ImageCache()
+
+    // MARK: - Public methods
 
     func loadImageWithUrl(_ url: URL) {
         activityIndicator.color = .darkGray
@@ -24,7 +28,7 @@ class ImageLoader: UIImageView {
         image = nil
         activityIndicator.startAnimating()
 
-        if let imageFromCache = imageCache.object(forKey: url as AnyObject) as? UIImage {
+        if let imageFromCache = cache[url] {
             image = imageFromCache
             activityIndicator.stopAnimating()
             return
@@ -43,7 +47,7 @@ class ImageLoader: UIImageView {
                     if self.imageURL == url {
                         self.image = imageToCache
                     }
-                    imageCache.setObject(imageToCache, forKey: url as AnyObject)
+                    self.cache[url] = self.image
                 }
                 self.activityIndicator.stopAnimating()
             }

@@ -34,7 +34,7 @@ final class ActorCollectionViewCell: UICollectionViewCell {
         actorNameLabel.text = model.name
 
         guard let posterPath = model.profilePath else { return }
-        let moviePosterString = Url.urlPoster + posterPath
+        let moviePosterString = Api.posterUrlString + posterPath
         guard let url = URL(string: moviePosterString) else { return }
         actorPhotoImageView.loadImageWithUrl(url)
     }

@@ -52,7 +52,7 @@ final class MovieCatalogTableViewCell: UITableViewCell {
 
     private func setPosterImageView(movie: Movie) {
         guard let posterPath = movie.posterPath else { return }
-        let moviePosterString = Url.urlPoster + posterPath
+        let moviePosterString = Api.posterUrlString + posterPath
         guard let url = URL(string: moviePosterString) else { return }
         posterImageView.loadImageWithUrl(url)
     }
@@ -64,7 +64,7 @@ final class MovieCatalogTableViewCell: UITableViewCell {
     }
 
     private func setReleaseDateLabel(movie: Movie) {
-        guard let date = DateFormatter.apiDateFormatter.date(from: movie.releaseDate) else { return }
+        guard let date = DateFormatter.apiDateFormatter.date(from: movie.releaseDateString) else { return }
         releaseDateLabel.text = DateFormatter.dateLongFormatter.string(from: date)
     }
 }

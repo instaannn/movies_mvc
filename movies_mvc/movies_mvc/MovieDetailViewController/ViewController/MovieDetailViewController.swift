@@ -50,9 +50,9 @@ final class MovieDetailViewController: UIViewController {
     // MARK: - Private properties
 
     private var movieDetail: MovieDetail?
-    private var trailers: Trailers?
-    private var networkService: NetworkServiceProtocol?
-    private var cast: Cast?
+    private var trailers: Videos?
+    private var networkService = NetworkService()
+    private var actors: Actors?
     private var shareUrlImdb = ""
 
     // MARK: - Lifecycle
@@ -73,47 +73,44 @@ final class MovieDetailViewController: UIViewController {
     // MARK: - Private Methods
 
     private func loadData() {
-        networkService = NetworkService()
-        networkService?.fetchDetails(for: movieId, complition: { [weak self] item in
+        networkService.fetchDetails(for: movieId, complition: { [weak self] item in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch item {
-                case let .failure(error):
-                    print(error)
                 case let .success(data):
                     self.movieDetail = data
                     self.setUI(movieDetail: self.movieDetail)
+                case let .failure(error):
+                    print(error)
                 }
             }
         })
     }
 
     private func loadTrailers() {
-        networkService = NetworkService()
-        networkService?.fetchTrailer(for: movieId, complition: { [weak self] item in
+        networkService.fetchTrailer(for: movieId, complition: { [weak self] item in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch item {
-                case let .failure(error):
-                    print(error)
                 case let .success(data):
                     self.trailers = data
+                case let .failure(error):
+                    print(error)
                 }
             }
         })
     }
 
     private func loadCast() {
-        networkService = NetworkService()
-        networkService?.fetchCast(for: movieId, complition: { [weak self] item in
+        networkService.fetchCast(for: movieId, complition: { [weak self] item in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch item {
+                case let .success(data):
+                    self.actors = data
+                    self.collectionView.reloadData()
                 case let .failure(error):
                     print(error)
-                case let .success(data):
-                    self.cast = data
-                    self.collectionView.reloadData()
                 }
             }
         })
@@ -137,19 +134,19 @@ final class MovieDetailViewController: UIViewController {
         titleLabel.text = movieDetail.title
         setTimeLabel(movieDetail: movieDetail)
         setVoteAverageLabel(movieDetail: movieDetail)
-        shareUrlImdb = "\(Url.imdbUrl)\(movieDetail.imdbId ?? "")"
+        shareUrlImdb = "\(Api.imdbUrlString)\(movieDetail.imdbId ?? "")"
         overviewLabel.text = movieDetail.overview
     }
 
     private func setPostersImageView(movieDetail: MovieDetail) {
-        let moviePosterString = Url.urlPoster + movieDetail.backdropPath
+        let moviePosterString = Api.posterUrlString + movieDetail.backdropPath
         guard let url = URL(string: moviePosterString) else { return }
         backgroundImageView.loadImageWithUrl(url)
     }
 
     private func setPosterImageView(movieDetail: MovieDetail) {
         guard let posterPath = movieDetail.posterPath else { return }
-        let moviePosterString = Url.urlPoster + posterPath
+        let moviePosterString = Api.posterUrlString + posterPath
         guard let url = URL(string: moviePosterString) else { return }
         posterImageView.loadImageWithUrl(url)
     }
@@ -175,14 +172,14 @@ final class MovieDetailViewController: UIViewController {
 
     @objc private func goToImdbButtonAction() {
         guard let movieDetail = movieDetail?.imdbId,
-              let url = URL(string: "\(Url.imdbUrl)\(movieDetail)") else { return }
+              let url = URL(string: "\(Api.imdbUrlString)\(movieDetail)") else { return }
         let vc = SFSafariViewController(url: url)
         present(vc, animated: true, completion: .none)
     }
 
     @objc private func watchTrailerButtonAction() {
-        guard let key = trailers?.results.first?.key,
-              let url = URL(string: "\(Url.urlYoutube)\(key)")
+        guard let key = trailers?.videos.first?.key,
+              let url = URL(string: "\(Api.youtubeUrlString)\(key)")
         else {
             showAlert(title: Constants.alertTitle, message: Constants.alertMessage)
             return
@@ -204,7 +201,7 @@ final class MovieDetailViewController: UIViewController {
 
 extension MovieDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        cast?.cast.count ?? 0
+        actors?.actors.count ?? 0
     }
 
     func collectionView(
@@ -214,7 +211,7 @@ extension MovieDetailViewController: UICollectionViewDataSource {
         guard let cell = collectionView
             .dequeueReusableCell(withReuseIdentifier: Constants.cellId, for: indexPath) as? ActorCollectionViewCell
         else { return UICollectionViewCell() }
-        guard let actor = cast?.cast[indexPath.row] else { return UICollectionViewCell() }
+        guard let actor = actors?.actors[indexPath.row] else { return UICollectionViewCell() }
         cell.configure(model: actor)
         return cell
     }

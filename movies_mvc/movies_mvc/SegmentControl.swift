@@ -6,19 +6,7 @@ import UIKit
 /// Кастомный SegmentControl с анимацией
 class SegmentControl: UISegmentedControl {}
 
-extension UIImage {
-    class func getSegRect(color: CGColor, andSize size: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        let context = UIGraphicsGetCurrentContext()
-        context?.setFillColor(color)
-        let rectangle = CGRect(x: 0.0, y: 0.0, width: size.width, height: size.height)
-        context?.fill(rectangle)
-        guard let rectangleImage = UIGraphicsGetImageFromCurrentImageContext() else { return UIImage() }
-        UIGraphicsEndImageContext()
-        return rectangleImage
-    }
-}
-
+/// Расширение для добавления анимации и выделения сегмента
 extension UISegmentedControl {
     func removeBorder() {
         let background = UIImage.getSegRect(

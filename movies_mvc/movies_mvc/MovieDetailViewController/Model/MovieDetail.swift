@@ -9,8 +9,8 @@ struct MovieDetail: Decodable {
     let runtime: Int?
     let voteAverage: Double
     let imdbId: String?
-    let releaseDate: String
-    let genres: [Genres]
+    let releaseDateString: String
+    let genres: [Genre]
     let overview: String
 
     private enum CodingKeys: String, CodingKey {
@@ -20,7 +20,7 @@ struct MovieDetail: Decodable {
         case runtime
         case voteAverage = "vote_average"
         case imdbId = "imdb_id"
-        case releaseDate = "release_date"
+        case releaseDateString = "release_date"
         case genres
         case overview
     }

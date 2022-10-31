@@ -1,7 +1,7 @@
-// Genres.swift
+// Genre.swift
 // Copyright © RoadMap. All rights reserved.
 
 /// Модель жанров
-struct Genres: Decodable {
+struct Genre: Decodable {
     let name: String
 }

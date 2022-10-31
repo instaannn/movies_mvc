@@ -20,7 +20,7 @@ final class MovieCatalogViewController: UIViewController {
 
     // MARK: - Private properties
 
-    private var networkService: NetworkServiceProtocol?
+    private var networkService = NetworkService()
     private var movies: [Movie] = []
     private var currentPage = 1
     private var hasNextPage = true
@@ -38,12 +38,12 @@ final class MovieCatalogViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        setNavigationBarHidden(true)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        setNavigationBarHidden(false)
     }
 
     // MARK: - Private methods
@@ -57,20 +57,23 @@ final class MovieCatalogViewController: UIViewController {
     }
 
     private func loadData(requestType: RequestType) {
-        networkService = NetworkService()
-        networkService?.fetchResult(page: currentPage, requestType: requestType, complition: { [weak self] item in
+        networkService.fetchResult(page: currentPage, requestType: requestType, complition: { [weak self] item in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 switch item {
-                case let .failure(error):
-                    print(error)
                 case let .success(data):
-                    self.movies += data.results
+                    self.movies += data.movies
                     self.hasNextPage = true
                     self.tableView.reloadData()
+                case let .failure(error):
+                    print(error)
                 }
             }
         })
+    }
+
+    private func setNavigationBarHidden(_ isHidden: Bool) {
+        navigationController?.setNavigationBarHidden(isHidden, animated: true)
     }
 
     private func setupNavigationController() {
